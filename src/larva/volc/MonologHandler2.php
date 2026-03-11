@@ -36,9 +36,10 @@ class MonologHandler2 extends AbstractProcessingHandler
     protected function write(array $record): void
     {
         try {
-            $this->tlaClient->putLogs($this->topicId, [$record]);
+            $this->tlaClient->putLogs($this->topicId, [json_decode($record['formatted'],true)]);
         } catch (\Exception|GuzzleException $e) {
-
+            error_log((string) $record['formatted']);
+            return;
         }
     }
 }
