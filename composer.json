@@ -1,9 +1,9 @@
 {
-  "name": "larva/tencentcloud-cls-sdk-php",
-  "description": "The Php SDK of Tencent Cloud CLS log service",
+  "name": "larva/volcengine-tls-sdk-php",
+  "description": "The Php SDK of volc engine TLS log service",
   "type": "library",
   "readme": "README.md",
-  "homepage": "https://github.com/TencentCloud/tencentcloud-sdk-php",
+  "homepage": "https://github.com/larva-cool/volcengine-tls-sdk-php",
   "license": "Apache-2.0",
   "keywords": ["sdk", "tls"],
   "require": {
