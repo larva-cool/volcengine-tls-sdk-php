@@ -24,5 +24,8 @@
       "Larva\\Volc\\": "src/larva/volc",
       "Tls\\": "src/proto/Tls"
     }
+  },
+  "require-dev": {
+    "monolog/monolog": "^3.10"
   }
 }
