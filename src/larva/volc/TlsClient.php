@@ -38,7 +38,7 @@ class TlsClient
     }
 
     /**
-     * 写入日志
+     * 批量写入日志
      * @param  string  $topicId
      * @param  array  $logs
      * @return ResponseInterface
@@ -47,6 +47,29 @@ class TlsClient
     public function putLogs(string $topicId, array $logs): ResponseInterface
     {
         $logs = self::buildLogs($logs);
+        $binaryData = $logs->serializeToString();
+        return $this->client->post('/PutLogs', [
+            'headers' => [
+                'Content-Type' => 'application/x-protobuf',
+                'x-tls-bodyrawsize' => strlen($binaryData),
+            ],
+            'query' => [
+                'TopicId' => $topicId,
+            ],
+            'body' => $binaryData,
+        ]);
+    }
+
+    /**
+     * 写入单条日志
+     * @param  string  $topicId
+     * @param  array  $log
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function putLog(string $topicId, array $log): ResponseInterface
+    {
+        $logs = self::buildLogs([$log]);
         $binaryData = $logs->serializeToString();
         return $this->client->post('/PutLogs', [
             'headers' => [
