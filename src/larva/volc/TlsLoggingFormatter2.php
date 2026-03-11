@@ -5,29 +5,28 @@
 
 namespace Larva\Volc;
 
-use DateTimeInterface;
-use Monolog\Formatter\JsonFormatter;
+use Monolog\Formatter\NormalizerFormatter;
 
-/**
- * Encodes message information into JSON in a format compatible with Cloud logging.
- *
- * @see https://cloud.google.com/logging/docs/structured-logging
- * @see https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry
- *
- * @author Luís Cobucci <lcobucci@gmail.com>
- */
-final class TlsLoggingFormatter2 extends JsonFormatter
+final class TlsLoggingFormatter2 extends NormalizerFormatter
 {
-    /** {@inheritdoc} **/
-    public function format(array $record): string
+    /**
+     * 格式化单条日志为数组（核心方法）
+     * @param array $record Monolog原始日志记录数组
+     * @return array 格式化后的日志数组
+     */
+    public function format(array $record): array
     {
-        // Re-key level for GCP logging
-        $record['severity'] = $record['level_name'];
-        $record['time'] = $record['datetime']->format(DateTimeInterface::RFC3339_EXTENDED);
-
-        // Remove keys that are not used by GCP
-        unset($record['level'], $record['level_name'], $record['datetime']);
-
-        return parent::format($record);
+        if ($record['datetime'] instanceof \DateTimeInterface) {
+            $record['datetime'] = $this->formatDate($record['datetime']);
+        }
+        // 提取并整理日志核心字段（可按需增减）
+        return [
+            'datetime'  => $record['datetime'], // 标准化时间格式
+            'channel'   => $record['channel'],                    // 日志通道
+            'severity'=> $record['level_name'],                 // 日志级别名称（如INFO/ERROR）
+            'message'   => $record['message'],                    // 日志消息
+            'context'   => json_encode($this->normalize($record['context'])),  // 上下文（标准化，处理对象/资源）
+            'extra'     => json_encode($this->normalize($record['extra']))     // 额外数据（标准化）
+        ];
     }
 }
