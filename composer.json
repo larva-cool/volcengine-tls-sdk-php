@@ -1,31 +1,34 @@
 {
-  "name": "larva/volcengine-tls-sdk-php",
-  "description": "The Php SDK of volc engine TLS log service",
-  "type": "library",
-  "readme": "README.md",
-  "homepage": "https://github.com/larva-cool/volcengine-tls-sdk-php",
-  "license": "Apache-2.0",
-  "keywords": ["sdk", "tls"],
-  "require": {
-    "php": ">=8.0",
-    "ext-json": "*",
-    "guzzlehttp/guzzle": "~7.0",
-    "guzzlehttp/psr7": "~2.0",
-    "google/protobuf": "^5.0"
-  },
-  "authors": [
-    {
-      "name": "Xu TL",
-      "email": "xutongle@gmail.com"
+    "name": "larva/volcengine-tls-sdk-php",
+    "description": "The Php SDK of volc engine TLS log service",
+    "type": "library",
+    "readme": "README.md",
+    "homepage": "https://github.com/larva-cool/volcengine-tls-sdk-php",
+    "license": "Apache-2.0",
+    "keywords": [
+        "sdk",
+        "tls"
+    ],
+    "require": {
+        "php": ">=8.0",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "~7.0",
+        "guzzlehttp/psr7": "~2.0",
+        "google/protobuf": "^5.0"
+    },
+    "require-dev": {
+        "monolog/monolog": "^3.10"
+    },
+    "authors": [
+        {
+            "name": "Xu TL",
+            "email": "xutongle@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Larva\\Volc\\": "src/larva/volc",
+            "Tls\\": "src/proto/Tls"
+        }
     }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Larva\\Volc\\": "src/larva/volc",
-      "Tls\\": "src/proto/Tls"
-    }
-  },
-  "require-dev": {
-    "monolog/monolog": "^3.10"
-  }
 }
