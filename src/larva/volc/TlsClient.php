@@ -5,6 +5,7 @@ namespace Larva\Volc;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
+use Psr\Http\Message\ResponseInterface;
 use Tls\Log;
 use Tls\LogContent;
 use Tls\LogGroup;
@@ -16,6 +17,7 @@ use Tls\LogTag;
  */
 class TlsClient
 {
+    /** @var Client  */
     protected Client $client;
 
     /**
@@ -39,14 +41,14 @@ class TlsClient
      * 写入日志
      * @param  string  $topicId
      * @param  array  $logs
-     * @return bool
+     * @return ResponseInterface
      * @throws GuzzleException
      */
-    public function putLogs(string $topicId, array $logs): bool
+    public function putLogs(string $topicId, array $logs): ResponseInterface
     {
         $logs = self::buildLogs($logs);
         $binaryData = $logs->serializeToString();
-        $res = $this->client->post('/PutLogs', [
+        return $this->client->post('/PutLogs', [
             'headers' => [
                 'Content-Type' => 'application/x-protobuf',
                 'x-tls-bodyrawsize' => strlen($binaryData),
@@ -56,11 +58,48 @@ class TlsClient
             ],
             'body' => $binaryData,
         ]);
-        if ($res->getStatusCode() == 200) {
-            return true;
-        } else {
-            return false;
-        }
+    }
+
+    /**
+     * 发送 POST Json 请求
+     * @param  string  $uri
+     * @param  array  $params
+     * @param  array  $headers
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function postJson(string $uri, array $params, array $headers = []): ResponseInterface
+    {
+        return $this->client->post($uri, ['headers' => $headers, 'json' => $params]);
+    }
+
+    /**
+     * 发送 POST 请求
+     * @param  string  $uri
+     * @param  array  $params
+     * @param  array  $headers
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function post(string $uri, array $params, array $headers = []): ResponseInterface
+    {
+        return $this->client->post($uri, ['headers' => $headers, 'form_params' => $params]);
+    }
+
+    /**
+     * 执行 Get 请求
+     * @param  string  $uri
+     * @param  array  $query
+     * @param  array  $headers
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function get(string $uri, array $query, array $headers = []): ResponseInterface
+    {
+        return $this->client->get($uri, [
+            'headers' => $headers,
+            'query' => $query,
+        ]);
     }
 
     /**
@@ -75,7 +114,7 @@ class TlsClient
     /**
      * 批量构建日志
      * @param  array  $logs
-     * @return array
+     * @return LogGroupList
      */
     public static function buildLogs(array $logs): LogGroupList
     {
@@ -100,7 +139,7 @@ class TlsClient
      * @param  array  $contents
      * @return array
      */
-    public static function buildLogContent(array $contents): array
+    protected static function buildLogContent(array $contents): array
     {
         $items = [];
         foreach ($contents as $key => $value) {
@@ -117,7 +156,7 @@ class TlsClient
      * @param  array  $tags
      * @return array
      */
-    public static function buildLogTags(array $tags): array
+    protected static function buildLogTags(array $tags): array
     {
         $items = [];
         foreach ($tags as $key => $value) {
