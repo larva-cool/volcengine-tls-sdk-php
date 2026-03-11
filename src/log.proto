@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package pb;
+option go_package = "./;pb";
+
+// ==================== PHP 核心配置（新增）====================
+// 1. 指定生成的 PHP 类的命名空间（根据你的项目结构调整，建议用项目根命名空间）
+option php_namespace = "Tls";
+// 2. 指定 PHP 元数据文件的命名空间（自动生成，无需修改）
+option php_metadata_namespace = "Tls\\Metadata";
+
+message LogContent
+{
+  string Key = 1;
+  string Value = 2;
+}
+
+message Log
+{
+  int64 Time = 1;// UNIX Time Format
+  repeated LogContent Contents = 2;
+}
+
+message LogTag
+{
+  string Key = 1;
+  string Value = 2;
+}
+
+message LogGroup
+{
+  repeated Log Logs = 1;
+  string Source = 2;
+  repeated LogTag LogTags = 3;
+  string FileName = 4;
+  string ContextFlow = 5; //该字段暂无效用
+}
+
+message LogGroupList
+{
+  repeated LogGroup LogGroups = 1;
+}

@@ -1,0 +1,28 @@
+{
+  "name": "larva/tencentcloud-cls-sdk-php",
+  "description": "The Php SDK of Tencent Cloud CLS log service",
+  "type": "library",
+  "readme": "README.md",
+  "homepage": "https://github.com/TencentCloud/tencentcloud-sdk-php",
+  "license": "Apache-2.0",
+  "keywords": ["sdk", "tls"],
+  "require": {
+    "php": ">=8.0",
+    "ext-json": "*",
+    "guzzlehttp/guzzle": "~7.0",
+    "guzzlehttp/psr7": "~2.0",
+    "google/protobuf": "^5.0"
+  },
+  "authors": [
+    {
+      "name": "Xu TL",
+      "email": "xutongle@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Larva\\Volc\\": "src/larva/volc",
+      "Tls\\": "src/proto/Tls"
+    }
+  }
+}
