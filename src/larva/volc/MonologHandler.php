@@ -39,7 +39,7 @@ class MonologHandler extends AbstractProcessingHandler
         try {
             $this->tlaClient->putLogs($this->topicId, [$record->formatted]);
         } catch (\Exception|GuzzleException $e) {
-            error_log((string) $record['formatted']);
+            error_log(implode("\n", $record['formatted']));
 
             return;
         }

@@ -15,9 +15,13 @@ class TlsLoggingFormatter extends NormalizerFormatter
      */
     public function format(LogRecord $record): array
     {
-        $result = $record->toArray();
-        $result['context'] = isset($result['context']) ? json_encode($result['context']) : '[]';
-        $result['extra'] = isset($result['extra']) ? json_encode($result['extra']) : '[]';
-        return $result;
+        $normalized = $this->normalizeRecord($record);
+        if ($normalized['datetime'] instanceof \DateTimeInterface) {
+            $normalized['datetime'] = $this->formatDate($normalized['datetime']);
+        }
+        $normalized['context'] = json_encode($this->normalize($normalized['context']));  // 上下文（标准化，处理对象/资源）
+        $normalized['extra'] = json_encode($this->normalize($normalized['extra']));     // 额外数据（标准化）
+
+        return $normalized;
     }
 }
