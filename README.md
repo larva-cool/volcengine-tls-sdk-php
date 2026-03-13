@@ -2,9 +2,6 @@
 
 [![Total Downloads](https://img.shields.io/packagist/dt/larva/volcengine-tls-sdk-php)](https://packagist.org/packages/larva/volcengine-tls-sdk-php)
 [![Latest Stable Version](https://img.shields.io/packagist/v/larva/volcengine-tls-sdk-php)](https://packagist.org/packages/larva/volcengine-tls-sdk-php)
-![badge](https://cnb.cool/larva-cool/volcengine-tls-sdk-php/-/badge/git/latest/code/vscode-started)
-![badge](https://cnb.cool/larva-cool/volcengine-tls-sdk-php/-/badge/git/latest/ci/pipeline-as-code)
-
 
 火山引擎 TLS PHP SDK
 
