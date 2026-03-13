@@ -46,6 +46,7 @@ class TlsClient
         return $this->client->post('/PutLogs', [
             'headers' => [
                 'Content-Type' => 'application/x-protobuf',
+                'Content-MD5' => md5($binaryData),
                 'x-tls-bodyrawsize' => strlen($binaryData),
             ],
             'query' => [
