@@ -1,5 +1,11 @@
 # volcengine-tls-sdk-php
 
+[![Total Downloads](https://img.shields.io/packagist/dt/larva/volcengine-tls-sdk-php)](https://packagist.org/packages/larva/volcengine-tls-sdk-php)
+[![Latest Stable Version](https://img.shields.io/packagist/v/larva/volcengine-tls-sdk-php)](https://packagist.org/packages/larva/volcengine-tls-sdk-php)
+![badge](https://cnb.cool/larva-cool/volcengine-tls-sdk-php/-/badge/git/latest/code/vscode-started)
+![badge](https://cnb.cool/larva-cool/volcengine-tls-sdk-php/-/badge/git/latest/ci/pipeline-as-code)
+
+
 火山引擎 TLS PHP SDK
 
 说明，实时日志导入，使用接口 putlog 不是明智的选择，应该用 kafka 协议或者 使用socket 直接写入日志，这个SDK适用于小项目或者将日志批量导入，
@@ -13,7 +19,7 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist composer require larva/volcengine-tls-sdk-php
+composer require larva/volcengine-tls-sdk-php
 ```
 
 or add
