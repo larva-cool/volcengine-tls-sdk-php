@@ -12,8 +12,9 @@ use Psr\Http\Message\ResponseInterface;
  */
 class TlsClient
 {
-    /** @var Client  */
+    /** @var Client */
     protected Client $client;
+    protected string $region;
 
     /**
      * @param  string  $ak
@@ -30,8 +31,95 @@ class TlsClient
             'base_uri' => $endpoint,
             'handler' => $stack,
         ]);
+        $this->region = $region;
     }
 
+    /**
+     * 创建一个日志项目
+     *
+     * @param  string  $projectName
+     * @param  string  $region
+     * @param  string  $desc
+     * @param  string  $iamProjectName
+     * @param  array  $tags
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function createProject(
+        string $projectName,
+        string $region = '',
+        string $desc = '',
+        string $iamProjectName = '',
+        array $tags = []
+    ): ResponseInterface {
+        $body = [
+            'ProjectName' => $projectName,
+            'Region' => $region ?: $this->region,
+            'Description' => $desc,
+        ];
+        if ($iamProjectName) {
+            $body['IamProjectName'] = $iamProjectName;
+        }
+        if ($tags) {
+            $body['Tags'] = $tags;
+        }
+
+        return $this->client->post('/CreateProject', [
+            'json' => $body,
+        ]);
+    }
+
+    /**
+     * 删除项目
+     * @param  string  $projectId
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function deleteProject(string $projectId): ResponseInterface
+    {
+        return $this->client->DELETE('/DeleteProject', [
+            'json' => [
+                'ProjectId' => $projectId,
+            ],
+        ]);
+    }
+
+    /**
+     * 修改项目
+     *
+     * @param  string  $projectId
+     * @param  string  $projectName
+     * @param  string  $desc
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function modifyProject(string $projectId, string $projectName, string $desc = ''): ResponseInterface
+    {
+        return $this->client->put('/ModifyProject', [
+            'json' => [
+                'ProjectId' => $projectId,
+                'ProjectName' => $projectName,
+                'Description' => $desc,
+            ],
+        ]);
+    }
+
+    /**
+     * 查询日志项目信息
+     *
+     * @param  string  $projectId
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function describeProject(string $projectId): ResponseInterface
+    {
+        return $this->client->get('/DescribeProject', [
+            'query' => [
+                'ProjectId' => $projectId,
+            ],
+        ]);
+    }
+    
     /**
      * 批量写入日志
      * @param  string  $topicId
@@ -66,6 +154,20 @@ class TlsClient
     public function putLog(string $topicId, array $log): ResponseInterface
     {
         return $this->putLogs($topicId, [$log]);
+    }
+
+    /**
+     * 检索日志
+     * @doc https://www.volcengine.com/docs/6470/112195?lang=zh
+     * @param  array  $body
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function searchLogs(array $body): ResponseInterface
+    {
+        return $this->client->post('/SearchLogs', [
+            'json' => $body,
+        ]);
     }
 
     /**
