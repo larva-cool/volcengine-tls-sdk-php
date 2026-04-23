@@ -27,10 +27,7 @@ class TlsClient
         $stack = HandlerStack::create();
         $middleware = new VolcMiddleware($ak, $sk, $region, 'TLS');
         $stack->push($middleware);
-        $this->client = new Client([
-            'base_uri' => $endpoint,
-            'handler' => $stack,
-        ]);
+        $this->client = new Client(['base_uri' => $endpoint, 'handler' => $stack,]);
         $this->region = $region;
     }
 
@@ -45,13 +42,8 @@ class TlsClient
      * @return ResponseInterface
      * @throws GuzzleException
      */
-    public function createProject(
-        string $projectName,
-        string $region = '',
-        string $desc = '',
-        string $iamProjectName = '',
-        array $tags = []
-    ): ResponseInterface {
+    public function createProject(string $projectName, string $region = '', string $desc = '', string $iamProjectName = '', array $tags = []): ResponseInterface
+    {
         $body = [
             'ProjectName' => $projectName,
             'Region' => $region ?: $this->region,
@@ -119,7 +111,58 @@ class TlsClient
             ],
         ]);
     }
-    
+
+    /**
+     * 查看当前地域下所有日志项目信息
+     * @param  array  $query
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function describeProjects(array $query): ResponseInterface
+    {
+        return $this->client->get('/DescribeProjects', [
+            'query' => $query,
+        ]);
+    }
+
+    /**
+     * 获取日志主题的分区列表
+     * @param  string  $topicId  日志主题 ID。
+     * @param  int  $pageNumber  分页查询时的页码。默认为 1，即从第一页数据开始返回。
+     * @param  int  $pageSize  分页大小。默认为 20，最大为 100。
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function describeShards(string $topicId, int $pageNumber = 1, int $pageSize = 10): ResponseInterface
+    {
+        return $this->client->get('/DescribeShards', [
+            'query' => [
+                'TopicId' => $topicId,
+                'PageNumber' => $pageNumber,
+                'PageSize' => $pageSize
+            ],
+        ]);
+    }
+
+    /**
+     * 手动分裂指定分区
+     * @param  string  $topicId  日志主题 ID。
+     * @param  int  $shardId  待手动分裂的日志分区 ID。
+     * @param  int  $number  分区的分裂数量。分裂数量应为非零偶数，例如 2、4、8 或 16。分裂后读写状态分区总数不能超过 256 个。
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function manualShardSplit(string $topicId, int $shardId, int $number): ResponseInterface
+    {
+        return $this->client->post('/CreateProject', [
+            'json' => [
+                'TopicId' => $topicId,
+                'ShardId' => $shardId,
+                'Number' => $number,
+            ],
+        ]);
+    }
+
     /**
      * 批量写入日志
      * @param  string  $topicId
@@ -167,6 +210,100 @@ class TlsClient
     {
         return $this->client->post('/SearchLogs', [
             'json' => $body,
+        ]);
+    }
+
+    /**
+     * 获取日志下载游标
+     * @param  string  $topicId  要获取日志游标的日志主题 ID。
+     * @param  int  $shardId  对应日志分区的 ID。您可以通过 DescribeShards 接口获取指定主题的分区列表。
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function describeCursor(string $topicId, int $shardId): ResponseInterface
+    {
+        return $this->client->get('/DescribeCursor', [
+            'query' => [
+                'TopicId' => $topicId,
+                'ShardId' => $shardId,
+            ],
+        ]);
+    }
+
+    /**
+     * 消费日志
+     * @param  string  $topicId  要消费日志的日志主题 ID。
+     * @param  int  $shardId  消费的日志主题分区的 ID。您可以通过 DescribeShards 接口获取指定主题的分区列表。
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function consumeLogs(string $topicId, int $shardId): ResponseInterface
+    {
+        return $this->client->get('/ConsumeLogs', [
+            'query' => [
+                'TopicId' => $topicId,
+                'ShardId' => $shardId,
+            ],
+        ]);
+    }
+
+    /**
+     * 创建日志下载任务
+     * @param  array  $body 查询参数
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function createDownloadTask(array $body): ResponseInterface
+    {
+        return $this->postJson('/CreateDownloadTask', $body);
+    }
+
+    /**
+     * 获取指定日志主题中的日志下载任务列表
+     * @param  string  $topicId
+     * @param  string  $taskName
+     * @param  int  $pageNumber
+     * @param  int  $pageSize
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function describeDownloadTasks(string $topicId, string $taskName, int $pageNumber = 1, int $pageSize = 20): ResponseInterface
+    {
+        return $this->get('/DescribeDownloadTasks', [
+            'query' => [
+                'TopicId' => $topicId,
+                'TaskName' => $taskName,
+                'PageNumber' => $pageNumber,
+                'PageSize' => $pageSize
+            ]
+        ]);
+    }
+
+    /**
+     * 获取指定任务对应的日志下载链接
+     * @param  string  $taskId
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function describeDownloadUrl(string $taskId): ResponseInterface
+    {
+        return $this->get('/DescribeDownloadUrl', [
+            'query' => [
+                'TaskId' => $taskId,
+            ]
+        ]);
+    }
+
+    /**
+     * 取消日志下载任务
+     * @param  string  $taskId
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function cancelDownloadTask(string $taskId): ResponseInterface
+    {
+        return $this->postJson('/CancelDownloadTask', [
+            'TaskId' => $taskId,
         ]);
     }
 
