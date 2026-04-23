@@ -7,6 +7,11 @@ namespace Larva\Volc;
 
 use Monolog\Formatter\NormalizerFormatter;
 
+/**
+ * Monolog V2的支持
+ *
+ * @author Tongle Xu <xutongle@gmail.com>
+ */
 final class TlsLoggingFormatter2 extends NormalizerFormatter
 {
     /**

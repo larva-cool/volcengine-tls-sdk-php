@@ -6,8 +6,7 @@
     "homepage": "https://github.com/larva-cool/volcengine-tls-sdk-php",
     "license": "Apache-2.0",
     "keywords": [
-        "sdk",
-        "tls"
+        "sdk", "tls"
     ],
     "require": {
         "php": ">=8.0",

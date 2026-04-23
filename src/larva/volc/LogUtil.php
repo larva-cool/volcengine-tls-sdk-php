@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This is NOT a freeware, use is subject to license terms.
  */
@@ -11,9 +12,13 @@ use Tls\LogGroup;
 use Tls\LogGroupList;
 use Tls\LogTag;
 
+/**
+ *  日志工具类
+ *
+ * @author Tongle Xu <xutongle@gmail.com>
+ */
 class LogUtil
 {
-
     /**
      * 批量构建日志
      * @param  array  $logs

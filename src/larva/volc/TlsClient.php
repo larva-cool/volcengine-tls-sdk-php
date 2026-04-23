@@ -14,6 +14,7 @@ class TlsClient
 {
     /** @var Client */
     protected Client $client;
+    /** @var string 地域 */
     protected string $region;
 
     /**
@@ -56,9 +57,7 @@ class TlsClient
             $body['Tags'] = $tags;
         }
 
-        return $this->client->post('/CreateProject', [
-            'json' => $body,
-        ]);
+        return $this->postJson('/CreateProject', $body);
     }
 
     /**
@@ -105,10 +104,8 @@ class TlsClient
      */
     public function describeProject(string $projectId): ResponseInterface
     {
-        return $this->client->get('/DescribeProject', [
-            'query' => [
-                'ProjectId' => $projectId,
-            ],
+        return $this->get('/DescribeProject', [
+            'ProjectId' => $projectId,
         ]);
     }
 
@@ -120,9 +117,7 @@ class TlsClient
      */
     public function describeProjects(array $query): ResponseInterface
     {
-        return $this->client->get('/DescribeProjects', [
-            'query' => $query,
-        ]);
+        return $this->get('/DescribeProjects', $query);
     }
 
     /**
@@ -135,12 +130,10 @@ class TlsClient
      */
     public function describeShards(string $topicId, int $pageNumber = 1, int $pageSize = 10): ResponseInterface
     {
-        return $this->client->get('/DescribeShards', [
-            'query' => [
-                'TopicId' => $topicId,
-                'PageNumber' => $pageNumber,
-                'PageSize' => $pageSize
-            ],
+        return $this->get('/DescribeShards', [
+            'TopicId' => $topicId,
+            'PageNumber' => $pageNumber,
+            'PageSize' => $pageSize
         ]);
     }
 
@@ -154,12 +147,10 @@ class TlsClient
      */
     public function manualShardSplit(string $topicId, int $shardId, int $number): ResponseInterface
     {
-        return $this->client->post('/CreateProject', [
-            'json' => [
-                'TopicId' => $topicId,
-                'ShardId' => $shardId,
-                'Number' => $number,
-            ],
+        return $this->postJson('/ManualShardSplit', [
+            'TopicId' => $topicId,
+            'ShardId' => $shardId,
+            'Number' => $number,
         ]);
     }
 
@@ -223,10 +214,8 @@ class TlsClient
     public function describeCursor(string $topicId, int $shardId): ResponseInterface
     {
         return $this->client->get('/DescribeCursor', [
-            'query' => [
-                'TopicId' => $topicId,
-                'ShardId' => $shardId,
-            ],
+            'TopicId' => $topicId,
+            'ShardId' => $shardId,
         ]);
     }
 
@@ -240,16 +229,14 @@ class TlsClient
     public function consumeLogs(string $topicId, int $shardId): ResponseInterface
     {
         return $this->client->get('/ConsumeLogs', [
-            'query' => [
-                'TopicId' => $topicId,
-                'ShardId' => $shardId,
-            ],
+            'TopicId' => $topicId,
+            'ShardId' => $shardId,
         ]);
     }
 
     /**
      * 创建日志下载任务
-     * @param  array  $body 查询参数
+     * @param  array  $body  查询参数
      * @return ResponseInterface
      * @throws GuzzleException
      */
@@ -270,12 +257,10 @@ class TlsClient
     public function describeDownloadTasks(string $topicId, string $taskName, int $pageNumber = 1, int $pageSize = 20): ResponseInterface
     {
         return $this->get('/DescribeDownloadTasks', [
-            'query' => [
-                'TopicId' => $topicId,
-                'TaskName' => $taskName,
-                'PageNumber' => $pageNumber,
-                'PageSize' => $pageSize
-            ]
+            'TopicId' => $topicId,
+            'TaskName' => $taskName,
+            'PageNumber' => $pageNumber,
+            'PageSize' => $pageSize
         ]);
     }
 
@@ -288,9 +273,7 @@ class TlsClient
     public function describeDownloadUrl(string $taskId): ResponseInterface
     {
         return $this->get('/DescribeDownloadUrl', [
-            'query' => [
-                'TaskId' => $taskId,
-            ]
+            'TaskId' => $taskId,
         ]);
     }
 

@@ -10,20 +10,18 @@ use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Level;
 use Monolog\LogRecord;
 
+/**
+ * Monolog V3的支持
+ *
+ * @author Tongle Xu <xutongle@gmail.com>
+ */
 class MonologHandler extends AbstractProcessingHandler
 {
     protected TlsClient $tlaClient;
     protected string $topicId;
 
-    public function __construct(
-        string $ak,
-        string $sk,
-        string $endpoint,
-        string $topicId,
-        string $region = 'cn-beijing',
-        $level = Level::Debug,
-        bool $bubble = true
-    ) {
+    public function __construct(string $ak, string $sk, string $endpoint, string $topicId, string $region = 'cn-beijing', $level = Level::Debug, bool $bubble = true)
+    {
         parent::__construct($level, $bubble);
         $this->topicId = $topicId;
         $this->tlaClient = new TlsClient($ak, $sk, $endpoint, $region);

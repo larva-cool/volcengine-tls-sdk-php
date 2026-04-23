@@ -2,6 +2,8 @@
 
 namespace Larva\Volc;
 
+use Closure;
+use Exception;
 use GuzzleHttp\Psr7\Query;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
@@ -41,7 +43,7 @@ class VolcMiddleware
         'user-agent' => true
     ];
 
-    public function __construct($ak,$sk,$region,$service)
+    public function __construct(string $ak, string $sk, string $region, string $service)
     {
         $this->ak = $ak;
         $this->sk = $sk;
@@ -54,9 +56,9 @@ class VolcMiddleware
      *
      * @param  callable  $handler
      *
-     * @return \Closure
+     * @return Closure
      */
-    public function __invoke(callable $handler)
+    public function __invoke(callable $handler): Closure
     {
         return function ($request, array $options) use ($handler) {
             $request = $this->onBefore($request);
@@ -68,6 +70,7 @@ class VolcMiddleware
      * 请求前调用
      * @param  RequestInterface  $request
      * @return RequestInterface
+     * @throws Exception
      */
     private function onBefore(RequestInterface $request): RequestInterface
     {
@@ -125,7 +128,7 @@ class VolcMiddleware
      * @param  string  $payload  Hash of the request payload
      * @return array Returns an array of context information
      */
-    private function createContext(array $parsedRequest, $payload): array
+    private function createContext(array $parsedRequest, string $payload): array
     {
         // Normalize the path as required by SigV4
         $canon = $parsedRequest['method']."\n"
@@ -164,9 +167,9 @@ class VolcMiddleware
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function getPayload(RequestInterface $request)
+    protected function getPayload(RequestInterface $request): string
     {
         // Calculate the request signature payload
         if ($request->hasHeader('X-Content-Sha256')) {
@@ -175,7 +178,7 @@ class VolcMiddleware
         }
 
         if (!$request->getBody()->isSeekable()) {
-            throw new \Exception(
+            throw new Exception(
                 'A sha256 checksum could not be calculated for the provided upload body, because it was not '
                 .'seekable. To prevent this error you can either 1) include the ContentSHA256 parameter with '
                 .'your request, 2) use a seekable stream for the body, or 3) wrap the non-seekable stream in '
@@ -185,12 +188,8 @@ class VolcMiddleware
 
         try {
             return Utils::hash($request->getBody(), 'sha256');
-        } catch (\Exception $e) {
-            throw new \Exception(
-                'A sha256 checksum could not be calculated. Verify that the hash extension is installed.',
-                0,
-                $e
-            );
+        } catch (Exception $e) {
+            throw new Exception('A sha256 checksum could not be calculated. Verify that the hash extension is installed.', 0, $e);
         }
     }
 
@@ -231,7 +230,7 @@ class VolcMiddleware
             $req['uri'] = $req['uri']->withQuery(Query::build($req['query']));
         }
 
-        return new Request($req['method'],$req['uri'],$req['headers'],$req['body'],$req['version']);
+        return new Request($req['method'], $req['uri'], $req['headers'], $req['body'], $req['version']);
     }
 
     private function getCanonicalizedQuery(array $query): string
