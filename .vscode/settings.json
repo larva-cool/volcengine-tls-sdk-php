@@ -1,0 +1,82 @@
+{
+    "AI.toolcall.v2.ide.command.mode": "whitelist",
+    "AI.toolcall.v2.command.allowList": "[\"ls\",\"mkdir\"]",
+    "AI.rules.importClaudeMd": true,
+    "trae.notification.enableOffersAndPromotions": false,
+    "trae.notification.enableFeedbackAndSurveys": false,
+    "php.validate.executablePath": "/Users/xutongle/Library/Application Support/Herd/bin/php82",
+    "php.suggest.basic": false,
+    "editor.fontSize": 16,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit",
+        "source.fixAll.php": "explicit",
+        "source.organizeImports.php": "explicit"
+    },
+    "editor.formatOnPaste": true,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": false
+    },
+    "git.confirmSync": false,
+    "git.autofetch": true,
+    "intelephense.completion.imports": true,
+    "intelephense.completion.imports.preferRelative": true,
+    "intelephense.completion.qualifyNamespaces": true,
+    "intelephense.environment.documentRoot": ".",
+    "intelephense.environment.phpVersion": "8.2.0",
+    "intelephense.completion.autoImport": true,
+    "intelephense.completion.insertUseDeclaration": true,
+    "intelephense.trace.server": "messages",
+    "intelephense.format.enable": true,
+    "intelephense.format.braces": "k&r",
+    "intelephense.environment.includePaths": [
+        "./",
+        "./app",
+        "./bootstrap",
+        "./config",
+        "./src",
+        "./vendor"
+    ],
+    "intelephense.files.associations": [
+        "*.php",
+        "*.inc",
+        "*.phtml"
+    ],
+    "intelephense.files.exclude": [
+        "**/node_modules/**",
+        "**/public/**",
+        "**/storage/**",
+        "**/vendor/bin/**",
+        "**/bootstrap/cache/**"
+    ],
+    "intelephense.completion.fullyQualifyGlobalConstantsAndFunctions": true,
+    "intelephense.telemetry.enabled": false,
+    "intelephense.phpdoc.propertyTemplate": {
+        "summary": "$1",
+        "tags": [
+            "@var ${1:$SYMBOL_TYPE}"
+        ]
+    },
+    "explorer.confirmPasteNative": false,
+    "explorer.confirmDragAndDrop": false,
+    "github.gitProtocol": "ssh",
+    "diffEditor.ignoreTrimWhitespace": false,
+    "go.toolsManagement.autoUpdate": true,
+    "redhat.telemetry.enabled": false,
+    "codeReview.autoJumpToNextChange": true,
+    "blade.format.enable": true,
+    "[blade]": {
+        "editor.defaultFormatter": "shufo.vscode-blade-formatter",
+        "editor.formatOnSave": true
+    },
+    "[php]": {
+        "editor.defaultFormatter": "laravel.vscode-laravel"
+    },
+    "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?",
+    "[vue]": {
+        "editor.defaultFormatter": "Vue.volar"
+    }
+}
