@@ -17,8 +17,11 @@ class VolcMiddleware
     const ISO8601_BASIC = 'Ymd\THis\Z';
 
     protected string $ak = '';
+
     protected string $sk = '';
+
     protected string $region = 'cn-beijing';
+
     protected string $service = 'TLS';
 
     protected static array $headerBlacklist = [
@@ -40,7 +43,7 @@ class VolcMiddleware
         'proxy-authorization' => true,
         'from' => true,
         'referer' => true,
-        'user-agent' => true
+        'user-agent' => true,
     ];
 
     public function __construct(string $ak, string $sk, string $region, string $service)
@@ -53,23 +56,19 @@ class VolcMiddleware
 
     /**
      * Called when the middleware is handled.
-     *
-     * @param  callable  $handler
-     *
-     * @return Closure
      */
     public function __invoke(callable $handler): Closure
     {
         return function ($request, array $options) use ($handler) {
             $request = $this->onBefore($request);
+
             return $handler($request, $options);
         };
     }
 
     /**
      * 请求前调用
-     * @param  RequestInterface  $request
-     * @return RequestInterface
+     *
      * @throws Exception
      */
     private function onBefore(RequestInterface $request): RequestInterface
@@ -89,25 +88,20 @@ class VolcMiddleware
         $signature = hash_hmac('sha256', $toSign, $signingKey);
 
         $parsed['headers']['Authorization'] = [
-            "HMAC-SHA256 "
+            'HMAC-SHA256 '
             ."Credential={$this->ak}/{$cs}, "
-            ."SignedHeaders={$context['headers']}, Signature={$signature}"
+            ."SignedHeaders={$context['headers']}, Signature={$signature}",
         ];
+
         return $this->buildRequest($parsed);
     }
 
-    /**
-     * @param $shortDate
-     * @param $region
-     * @param $service
-     * @param $secretKey
-     * @return string
-     */
     private function getSigningKey($shortDate, $region, $service, $secretKey): string
     {
         $dateKey = hash_hmac('sha256', $shortDate, "{$secretKey}", true);
         $regionKey = hash_hmac('sha256', $region, $dateKey, true);
         $serviceKey = hash_hmac('sha256', $service, $regionKey, true);
+
         return hash_hmac('sha256', 'request', $serviceKey, true);
     }
 
@@ -124,7 +118,6 @@ class VolcMiddleware
     }
 
     /**
-     * @param  array  $parsedRequest
      * @param  string  $payload  Hash of the request payload
      * @return array Returns an array of context information
      */
@@ -138,11 +131,11 @@ class VolcMiddleware
         $signedHeadersString = '';
         $canonHeaders = [];
         // Case-insensitively aggregate all of the headers.
-        if (!isset($parsedRequest['query']['X-SignedQueries'])) {
+        if (! isset($parsedRequest['query']['X-SignedQueries'])) {
             $aggregate = [];
             foreach ($parsedRequest['headers'] as $key => $values) {
                 $key = strtolower($key);
-                if (!isset(self::$headerBlacklist[$key])) {
+                if (! isset(self::$headerBlacklist[$key])) {
                     foreach ($values as $v) {
                         $aggregate[$key][] = $v;
                     }
@@ -177,7 +170,7 @@ class VolcMiddleware
             return $request->getHeaderLine('X-Content-Sha256');
         }
 
-        if (!$request->getBody()->isSeekable()) {
+        if (! $request->getBody()->isSeekable()) {
             throw new Exception(
                 'A sha256 checksum could not be calculated for the provided upload body, because it was not '
                 .'seekable. To prevent this error you can either 1) include the ContentSHA256 parameter with '
@@ -195,8 +188,6 @@ class VolcMiddleware
 
     /**
      * 解析请求
-     * @param  RequestInterface  $request
-     * @return array
      */
     private function parseRequest(RequestInterface $request): array
     {
@@ -215,14 +206,12 @@ class VolcMiddleware
             'uri' => $uri,
             'headers' => $request->getHeaders(),
             'body' => $request->getBody(),
-            'version' => $request->getProtocolVersion()
+            'version' => $request->getProtocolVersion(),
         ];
     }
 
     /**
      * 根据提供的参数构建一个新的请求
-     * @param  array  $req
-     * @return RequestInterface
      */
     private function buildRequest(array $req): RequestInterface
     {
@@ -237,7 +226,7 @@ class VolcMiddleware
     {
         unset($query['X-Signature']);
 
-        if (!$query) {
+        if (! $query) {
             return '';
         }
 
@@ -245,7 +234,7 @@ class VolcMiddleware
         if (isset($query['X-SignedQueries'])) {
             foreach (explode(';', $query['X-SignedQueries']) as $k) {
                 $v = $query[$k];
-                if (!is_array($v)) {
+                if (! is_array($v)) {
                     $qs .= rawurlencode($k).'='.rawurlencode($v).'&';
                 } else {
                     sort($v);
@@ -257,7 +246,7 @@ class VolcMiddleware
         } else {
             ksort($query);
             foreach ($query as $k => $v) {
-                if (!is_array($v)) {
+                if (! is_array($v)) {
                     $qs .= rawurlencode($k).'='.rawurlencode($v).'&';
                 } else {
                     sort($v);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This is NOT a freeware, use is subject to license terms.
  */
@@ -17,6 +18,7 @@ use Monolog\Level;
 class MonologHandler2 extends AbstractProcessingHandler
 {
     protected TlsClient $tlaClient;
+
     protected string $topicId;
 
     public function __construct(string $ak, string $sk, string $endpoint, string $topicId, string $region = 'cn-beijing', $level = Level::Debug, bool $bubble = true)
@@ -28,8 +30,6 @@ class MonologHandler2 extends AbstractProcessingHandler
 
     /**
      * 单条日志写入
-     * @param  array  $record
-     * @return void
      */
     protected function write(array $record): void
     {
@@ -37,6 +37,7 @@ class MonologHandler2 extends AbstractProcessingHandler
             $this->tlaClient->putLogs($this->topicId, [$record['formatted']]);
         } catch (\Exception|GuzzleException $e) {
             error_log((string) $record['formatted']);
+
             return;
         }
     }

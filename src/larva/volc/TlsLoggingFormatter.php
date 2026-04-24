@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This is NOT a freeware, use is subject to license terms.
  */
@@ -16,7 +17,7 @@ use Monolog\LogRecord;
 class TlsLoggingFormatter extends NormalizerFormatter
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function format(LogRecord $record): array
     {

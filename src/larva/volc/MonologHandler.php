@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This is NOT a freeware, use is subject to license terms.
  */
@@ -18,6 +19,7 @@ use Monolog\LogRecord;
 class MonologHandler extends AbstractProcessingHandler
 {
     protected TlsClient $tlaClient;
+
     protected string $topicId;
 
     public function __construct(string $ak, string $sk, string $endpoint, string $topicId, string $region = 'cn-beijing', $level = Level::Debug, bool $bubble = true)
@@ -29,8 +31,6 @@ class MonologHandler extends AbstractProcessingHandler
 
     /**
      * 单条日志写入
-     * @param  LogRecord  $record
-     * @return void
      */
     protected function write(LogRecord $record): void
     {

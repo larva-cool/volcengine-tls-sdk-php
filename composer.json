@@ -16,7 +16,8 @@
         "google/protobuf": "^5.0"
     },
     "require-dev": {
-        "monolog/monolog": "^3.10"
+        "monolog/monolog": "^3.10",
+        "laravel/pint": "^1.29"
     },
     "authors": [
         {
