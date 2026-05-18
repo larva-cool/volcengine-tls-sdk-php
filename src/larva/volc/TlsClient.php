@@ -16,6 +16,9 @@ class TlsClient
 
     /** @var string 地域 */
     protected string $region;
+    protected string $endpoint;
+    protected string $ak;
+    protected string $sk;
 
     public function __construct(string $ak, string $sk, string $endpoint, string $region = 'cn-beijing')
     {
@@ -24,6 +27,30 @@ class TlsClient
         $stack->push($middleware);
         $this->client = new Client(['base_uri' => $endpoint, 'handler' => $stack]);
         $this->region = $region;
+        $this->endpoint = $endpoint;
+        $this->ak = $ak;
+        $this->sk = $sk;
+    }
+
+    /**
+     * 获取 kafka 配置
+     * @param  string  $projectId
+     * @param  string  $topic
+     * @return string[]
+     */
+    public function getKafkaConfig(string $projectId, string $topic): array
+    {
+        if (str_contains('ivolces.com', $this->endpoint)) {
+            $net = 'public';
+        } else {
+            $net = 'private';
+        }
+        return [
+            'host' => str_replace("https://", "", $this->endpoint).':9093',
+            'username' => "{$projectId}#{$net}",
+            'password' => "{$this->ak}#{$this->sk}",
+            'topic' => 'out-'.$topic,
+        ];
     }
 
     /**
